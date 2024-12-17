@@ -23,3 +23,15 @@ export const getDetailProduct = (id, callback) => {
         console.log(err);
     })
 };
+
+export const auth = (data, callback,res) => {
+    const apiURL = import.meta.env.VITE_API_URL;
+    axios
+      .post(`${apiURL}/auth/login`, data)
+      .then((res) => {
+          callback(true, res.data.token)
+      })
+      .catch((error) => {
+        callback(false, error);
+      });
+  }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import { getProducts } from "../services/api";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -9,28 +9,43 @@ const ProductList = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const apiURL = import.meta.env.VITE_API_URL;
-        const response = await axios.get(`${apiURL}/products`);
-        setProducts(response.data);
-        setFilteredProducts(response.data);
+    getProducts(
+      (data) => {
+        setProducts(data);
+        setFilteredProducts(data);
         setLoading(false);
-      } catch (err) {
+      },
+      (err) => {
         console.error("Error fetching products:", err);
         setError(err);
         setLoading(false);
       }
-    };
-
-    fetchProducts();
+    );
   }, []);
 
+  const handleAddToCart = (product) => {
+    const token = localStorage.getItem("access_token");
+  
+    if (token) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(product);
+  
+      localStorage.setItem("cart", JSON.stringify(cart));
+  
+      console.log("Product added to cart:", product);
+    } else {
+      console.log("Token tidak ditemukan, arahkan ke login");
+      window.location.href = "/login";
+    }
+  };
+
   const filterByCategory = (category) => {
-    if (category === 'All') {
+    if (category === "All") {
       setFilteredProducts(products);
     } else {
-      setFilteredProducts(products.filter((product) => product.category === category));
+      setFilteredProducts(
+        products.filter((product) => product.category === category)
+      );
     }
   };
 
@@ -61,7 +76,9 @@ const ProductList = () => {
             </h2>
 
             <p className="hidden max-w-lg text-white/90 md:mt-6 md:block md:text-lg md:leading-relaxed">
-              Kami menyediakan keperluan anda mulai dari pakaian, tas, alat elektronik dengan harga yang murah namun berkualitas Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque, laborum?.
+              Kami menyediakan keperluan anda mulai dari pakaian, tas, alat
+              elektronik dengan harga yang murah namun berkualitas Lorem, ipsum
+              dolor sit amet consectetur adipisicing elit. Doloremque, laborum?.
             </p>
 
             <div className="mt-4 sm:mt-8">
@@ -77,53 +94,56 @@ const ProductList = () => {
       </section>
       {/* CTA END */}
 
-      <div className="flex justify-center mb-2 mt-16 gap-5 items-center"  id="product1">
+      <div
+        className="flex justify-center mb-2 mt-16 gap-5 items-center"
+        id="product1"
+      >
         <button
           className="hover:overline font-sans font-semibold transition ease-in-out ml-2 hover:text-red-500"
-          onClick={() => filterByCategory('All')}
+          onClick={() => filterByCategory("All")}
         >
           All
         </button>
         <button
           className="hover:overline font-sans font-semibold transition ease-in-out ml-2 hover:text-red-500"
-          onClick={() => filterByCategory('men\'s clothing')}
+          onClick={() => filterByCategory("men's clothing")}
         >
           Men's Clothing
         </button>
         <button
           className="hover:overline font-sans font-semibold transition ease-in-out ml-2 hover:text-red-500"
-          onClick={() => filterByCategory('women\'s clothing')}
+          onClick={() => filterByCategory("women's clothing")}
         >
           Women's Clothing
         </button>
         <button
           className="hover:overline font-sans font-semibold transition ease-in-out ml-2 hover:text-red-500"
-          onClick={() => filterByCategory('jewelery')}
+          onClick={() => filterByCategory("jewelery")}
         >
           Jewelry
         </button>
         <button
           className="hover:overline font-sans font-semibold transition ease-in-out ml-2 hover:text-red-500"
-          onClick={() => filterByCategory('electronics')}
+          onClick={() => filterByCategory("electronics")}
         >
           Electronics
         </button>
       </div>
 
       <div className="container mx-auto px-1 -mt-4 mb-12">
-      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-5">
           {filteredProducts.map((product) => (
-            <div 
-              key={product.id} 
+            <div
+              key={product.id}
               className="w-full max-w-xs bg-white border-gray-700 rounded-lg shadow-lg mx-2 my-2 flex flex-col justify-between"
             >
-              <a href="#">
-                <img 
-                  src={product.image || '/public/images/shoes1.jpg'} 
-                  alt={product.name} 
+              <Link to={`/product/${product.id}`}>
+                <img
+                  src={product.image || "/public/images/shoes1.jpg"}
+                  alt={product.name}
                   className="p-8 rounded-t-lg object-cover h-64 w-full"
                 />
-              </a>
+              </Link>
               <div className="px-5 pb-4">
                 <a href="">
                   <h5 className="text-xl font-semibold tracking-tight text-gray-900">
@@ -136,21 +156,24 @@ const ProductList = () => {
               </div>
               <div className="flex items-center justify-between px-5 pb-5">
                 <span className="text-lg font-bold text-gray-700">
-                  {product.price.toLocaleString('id-ID', {style: 'currency', currency: 'USD'})}</span>
-                <Link 
-                  to={`/product/${product.id}`} 
+                  {product.price.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
+                </span>
+                <Link
+                  to={`/product/${product.id}`}
                   className="hover:overline font-serif transition ease-in-out ml-1"
                 >
                   Detail
                 </Link>
-                <button className="bg-red-500 text-sm h-10 px-2 font-semibold rounded-md text-white">
+                <button className="bg-red-500 text-sm h-10 px-2 font-semibold rounded-md text-white" onClick={() => handleAddToCart(product)}>
                   Add to Cart
                 </button>
               </div>
             </div>
           ))}
         </div>
-
       </div>
     </div>
   );
