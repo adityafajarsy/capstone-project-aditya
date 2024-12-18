@@ -25,7 +25,6 @@ const Login = () => {
       setLoading(false);
       navigate("/");
     } catch (err) {
-      console.error("Error during login:", err);
       setLoginFailed("You have entered an invalid username or password.");
       setLoading(false);
     }

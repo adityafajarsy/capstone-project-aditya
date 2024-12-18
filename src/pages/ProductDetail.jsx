@@ -14,6 +14,19 @@ const ProductDetail = () => {
     });
   }, [id]);
 
+  const handleAddToCart = (product) => {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(product);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      console.log("Product added to cart:", product);
+    } else {
+      window.location.href = "/login";
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -24,9 +37,9 @@ const ProductDetail = () => {
 
   return (
     <div>
-      <div className="text-gray-600 body-font overflow-hidden">
+      <div className="text-gray-600 body-font overflow-hidden mb-60">
         {Object.keys(product).length > 0 && (
-          <div className="container px-5 py-24 mx-auto">
+          <div className="container px-5 py-24 mx-auto my-auto">
             <div className="lg:w-4/5 mx-auto flex flex-wrap">
               <img
                 alt="ecommerce"
@@ -45,9 +58,9 @@ const ProductDetail = () => {
                     <svg
                       fill="currentColor"
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       className="w-4 h-4 text-red-500"
                       viewBox="0 0 24 24"
                     >
@@ -56,9 +69,9 @@ const ProductDetail = () => {
                     <svg
                       fill="currentColor"
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       className="w-4 h-4 text-red-500"
                       viewBox="0 0 24 24"
                     >
@@ -67,9 +80,9 @@ const ProductDetail = () => {
                     <svg
                       fill="currentColor"
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       className="w-4 h-4 text-red-500"
                       viewBox="0 0 24 24"
                     >
@@ -78,9 +91,9 @@ const ProductDetail = () => {
                     <svg
                       fill="currentColor"
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       className="w-4 h-4 text-red-500"
                       viewBox="0 0 24 24"
                     >
@@ -89,9 +102,9 @@ const ProductDetail = () => {
                     <svg
                       fill="none"
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       className="w-4 h-4 text-red-500"
                       viewBox="0 0 24 24"
                     >
@@ -111,15 +124,18 @@ const ProductDetail = () => {
                       currency: "USD",
                     })}
                   </span>
-                  <button className="flex text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded ml-48 mt-5">
+                  <button
+                    className="flex text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded ml-48 mt-5"
+                    onClick={() => handleAddToCart(product)}
+                  >
                     Add to Cart
                   </button>
                   <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-5 mt-5">
                     <svg
                       fill="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       className="w-5 h-5"
                       viewBox="0 0 24 24"
                     >
@@ -128,27 +144,27 @@ const ProductDetail = () => {
                   </button>
                 </div>
                 <Link
-                    to="/"
-                    title=""
-                    className="inline-flex items-center gap-2 text-sm font-medium text-black underline hover:no-underline mt-7 ml-80"
+                  to="/"
+                  title=""
+                  className="inline-flex items-center gap-2 text-sm font-medium text-black underline hover:no-underline mt-7 ml-80"
+                >
+                  Continue Shopping
+                  <svg
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
                   >
-                    Continue Shopping
-                    <svg
-                      className="h-5 w-5"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 12H5m14 0-4 4m4-4-4-4"
-                      />
-                    </svg>
-                  </Link>
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 12H5m14 0-4 4m4-4-4-4"
+                    />
+                  </svg>
+                </Link>
               </div>
             </div>
           </div>

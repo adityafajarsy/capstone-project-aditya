@@ -29,12 +29,9 @@ const ProductList = () => {
     if (token) {
       let cart = JSON.parse(localStorage.getItem("cart")) || [];
       cart.push(product);
-  
       localStorage.setItem("cart", JSON.stringify(cart));
-  
       console.log("Product added to cart:", product);
     } else {
-      console.log("Token tidak ditemukan, arahkan ke login");
       window.location.href = "/login";
     }
   };
