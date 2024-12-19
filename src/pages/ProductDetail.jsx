@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, fetchDetailProduct } from "../store/action";
@@ -9,6 +9,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [addedProducts, setAddedProducts] = useState(new Set());
 
   const { loading, error, product } = useSelector((state) => state.product);
   const { items } = useSelector((state) => state.product);
@@ -19,18 +20,22 @@ const ProductDetail = () => {
     }
   }, [dispatch, id]);
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = async (product) => {
     const token = localStorage.getItem("access_token");
-    const existingItem = items.find(item => item.id === product.id);
-  
-    if (token) {
-      if (!existingItem) {
-        dispatch(addToCart(product));
-        console.log("Product added to cart:", product);
-      }
-    } else {
+    const existingItem = items.find((item) => item.id === product.id);
+
+    if (!token) {
       navigate("/login");
+      return;
     }
+
+    if (existingItem && existingItem.quantity >= 20) {
+      alert("Quantity tidak terpenuhi - maksimum 20 item");
+      return;
+    }
+
+    await dispatch(addToCart(product));
+    setAddedProducts((prev) => new Set([...prev, product.id]));
   };
 
   if (loading) {
@@ -91,10 +96,18 @@ const ProductDetail = () => {
                     })}
                   </span>
                   <button
-                    className="flex text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded ml-48 mt-5"
+                    className={`flex text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded ml-48 mt-5 
+        ${
+          addedProducts.has(product.id)
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:bg-red-600"
+        }`}
                     onClick={() => handleAddToCart(product)}
+                    disabled={addedProducts.has(product.id)}
                   >
-                    Add to Cart
+                    {addedProducts.has(product.id)
+                      ? "Added to Cart"
+                      : "Add to Cart"}
                   </button>
                   <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-5 mt-5">
                     <svg

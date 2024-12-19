@@ -12,9 +12,9 @@ export const Loader = () => (
 );
 
 const ProductList = () => {
-  const [addedProducts, setAddedProducts] = useState(new Set());
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [addedProducts, setAddedProducts] = useState(new Set());
   const { products, filteredProduct, loading, error } = useSelector(
     (state) => state.product
   );
@@ -24,18 +24,22 @@ const ProductList = () => {
     dispatch(fetchProduct());
   }, [dispatch]);
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = async (product) => {
     const token = localStorage.getItem("access_token");
-    const existingItem = items.find(item => item.id === product.id);
-  
-    if (token) {
-      if (!existingItem) {
-        dispatch(addToCart(product));
-        console.log("Product added to cart:", product);
-      }
-    } else {
+    const existingItem = items.find((item) => item.id === product.id);
+
+    if (!token) {
       navigate("/login");
+      return;
     }
+
+    if (existingItem && existingItem.quantity >= 20) {
+      alert("Quantity tidak terpenuhi - maksimum 20 item");
+      return;
+    }
+
+    await dispatch(addToCart(product));
+    setAddedProducts((prev) => new Set([...prev, product.id]));
   };
 
   const filterByCategory = (category) => {
@@ -156,10 +160,18 @@ const ProductList = () => {
                   Detail
                 </Link>
                 <button
-                  className="bg-red-500 text-sm h-10 px-2 font-semibold rounded-md text-white"
+                  className={`bg-red-500 text-sm h-10 px-2 font-semibold rounded-md text-white 
+        ${
+          addedProducts.has(product.id)
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:bg-red-600"
+        }`}
                   onClick={() => handleAddToCart(product)}
+                  disabled={addedProducts.has(product.id)}
                 >
-                  Add to Cart
+                  {addedProducts.has(product.id)
+                    ? "Added to Cart"
+                    : "Add to Cart"}
                 </button>
               </div>
             </div>

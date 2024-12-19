@@ -12,16 +12,16 @@ const productReducer = (state = initialState, action) => {
   const product = action.payload;
   switch (action.type) {
     case action_key.ADD_TO_CART:
-      // Check if item already exists
-      const existingItem = state.items.find(
-        (item) => item.id === action.payload.id
-      );
+      const existingItem = state.items.find(item => item.id === action.payload.id);
       if (existingItem) {
+        if (existingItem.quantity >= 20) {
+          return state;
+        }
         return {
           ...state,
-          items: state.items.map((item) =>
+          items: state.items.map(item =>
             item.id === action.payload.id
-              ? { ...item, quantity: item.quantity + 1 }
+              ? { ...item, quantity: Math.min(item.quantity + 1, 20) }
               : item
           ),
         };
@@ -29,6 +29,12 @@ const productReducer = (state = initialState, action) => {
       return {
         ...state,
         items: [...state.items, { ...action.payload, quantity: 1 }],
+      };
+
+    case action_key.PERSIST_CART:
+      return {
+        ...state,
+        items: action.payload,
       };
 
     case action_key.REMOVE_FROM_CART:
