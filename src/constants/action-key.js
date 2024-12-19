@@ -12,6 +12,8 @@ const action_key = {
   UPDATE_CART_ITEM: "UPDATE_CART_ITEM",
   CLEAR_CART: "CLEAR_CART",
   UPDATE_CART_QUANTITY: 'UPDATE_CART_QUANTITY',
+  SET_STOCK: 'SET_STOCK',
+  PERSIST_CART: 'PERSIST_CART',
 };
 
 export default action_key;

@@ -47,7 +47,7 @@ const ProductDetail = () => {
   }
 
   if (!product || !Object.keys(product).length) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   return (

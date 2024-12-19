@@ -43,7 +43,7 @@ export const fetchDetailProduct = (id) => async (dispatch) => {
       payload: true,
     });
   } 
-};
+}
 
 export const addToCart = (product) => (dispatch, getState) => {
   return new Promise((resolve) => {
