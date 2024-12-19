@@ -49,3 +49,22 @@ export const fetchDetailProduct = (id) => async (dispatch) => {
     });
   }
 };
+
+export const addToCart = (product) => ({
+  type: action_key.ADD_TO_CART,
+  payload: product,
+});
+
+export const removeFromCart = (productId) => ({
+  type: action_key.REMOVE_FROM_CART,
+  payload: productId,
+});
+
+export const updateCartItem = (productId, quantity) => ({
+  type: action_key.UPDATE_CART_ITEM,
+  payload: { productId, quantity },
+});
+
+export const clearCart = () => ({
+  type: action_key.CLEAR_CART,
+});

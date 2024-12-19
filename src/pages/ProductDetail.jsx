@@ -1,10 +1,12 @@
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDetailProduct } from "../store/action";
+import { addToCart, fetchDetailProduct } from "../store/action";
+import { Loader } from "./ProductList";
+import { EmptyPage } from "./EmptyPage";
 
 const ProductDetail = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -12,48 +14,29 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchDetailProduct(id)); 
+      dispatch(fetchDetailProduct(id));
     }
   }, [dispatch, id]);
 
   const handleAddToCart = (product) => {
     const token = localStorage.getItem("access_token");
 
-    if (token) {
-      try {
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-        cart.push(product);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        console.log("Product added to cart:", product);
-      } catch (err) {
-        console.error("Error adding to cart:", err);
-        localStorage.setItem("cart", JSON.stringify([]));
-      }
+    if (!token) {
+      // ini gw matiin dlu
+
+      dispatch(addToCart(product));
+      console.log("Product added to cart:", product);
     } else {
-      navigate('/login');
+      navigate("/login");
     }
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-red-500"></div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (error) {
-    return (
-      <div className="grid h-screen place-content-center bg-white px-4">
-        <div className="text-center">
-          <h1 className="text-9xl font-black text-gray-200">404</h1>
-          <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Uh-oh!
-          </p>
-          <p className="mt-4 text-gray-500">Error Fetching Data.</p>
-        </div>
-      </div>
-    );
+    return <EmptyPage />;
   }
 
   if (!product || !Object.keys(product).length) {

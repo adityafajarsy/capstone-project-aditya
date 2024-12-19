@@ -12,23 +12,25 @@ function App() {
     <>
       <Router>
         <div>
-      <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<ProductList />} />
-            <Route path="/login" element={<Login />} />
-            <Route
+          <Navbar />
+          <main>
+            <Routes>
+              <Route path="/" element={<ProductList />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/cart" element={<Cart />} />
+
+              {/* <Route
           path="/cart"
           element={
             <ProtectedRoute>
               <Cart />
             </ProtectedRoute>
           }
-        />
-            <Route path="/product/:id" element={<ProductDetail />} />
-          </Routes>
-        </main>
-      <Footer />
+        /> */}
+              <Route path="/product/:id" element={<ProductDetail />} />
+            </Routes>
+          </main>
+          <Footer />
         </div>
       </Router>
     </>

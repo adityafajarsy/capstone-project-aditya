@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { fetchProduct } from "../store/action";
+import { addToCart, fetchProduct } from "../store/action";
 import { useDispatch, useSelector } from "react-redux";
 import action_key from "../constants/action-key";
+import { EmptyPage } from "./EmptyPage";
+
+export const Loader = () => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-red-500"></div>
+  </div>
+);
 
 const ProductList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { products, filteredProduct, loading, error } = useSelector((state) => state.product);
+  const { products, filteredProduct, loading, error } = useSelector(
+    (state) => state.product
+  );
 
   useEffect(() => {
     dispatch(fetchProduct());
@@ -16,10 +25,8 @@ const ProductList = () => {
   const handleAddToCart = (product) => {
     const token = localStorage.getItem("access_token");
 
-    if (token) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.push(product);
-      localStorage.setItem("cart", JSON.stringify(cart));
+    if (!token) { // ini gw matiin dlu
+      dispatch(addToCart(product));
       console.log("Product added to cart:", product);
     } else {
       navigate("/login");
@@ -34,27 +41,11 @@ const ProductList = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-red-500"></div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (error) {
-    return (
-      <div className="grid h-screen place-content-center bg-white px-4">
-        <div className="text-center">
-          <h1 className="text-9xl font-black text-gray-200">404</h1>
-
-          <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Uh-oh!
-          </p>
-
-          <p className="mt-4 text-gray-500">Error Fetching Data.</p>
-        </div>
-      </div>
-    );
+    return <EmptyPage />;
   }
 
   return (

@@ -1,7 +1,7 @@
 import action_key from "../constants/action-key";
 
 const initialState = {
-  cart: [],
+  items: [],
   products: [],
   filteredProduct: [],
   loading: false,
@@ -11,31 +11,44 @@ const initialState = {
 const productReducer = (state = initialState, action) => {
   const product = action.payload;
   switch (action.type) {
-    case action_key.ADD_CART:
-      const exist = state.find((x) => x.id === product.id);
-      if (exist) {
-        return state.map((x) =>
-          x.id === product.id ? { ...x, qty: x.qty + 1 } : x
-        );
-      } else {
-        const product = action.payload;
-        return [...state, { ...product, qty: 1 }];
+    case action_key.ADD_TO_CART:
+      // Check if item already exists
+      const existingItem = state.items.find(
+        (item) => item.id === action.payload.id
+      );
+      if (existingItem) {
+        return {
+          ...state,
+          items: state.items.map((item) =>
+            item.id === action.payload.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+        };
       }
-      break;
+      return {
+        ...state,
+        items: [...state.items, { ...action.payload, quantity: 1 }],
+      };
 
-    case action_key.REMOVE_CART:
-      const item1 = state.find((x) => x.id === product.id);
-      if (item1.qty === 1) {
-        return state.filter((x) => x.id !== item1.id);
-      } else {
-        return state.map((x) =>
-          x.id === product.id ? { ...x, qty: x.qty - 1 } : x
-        );
-      }
-      break;
+    case action_key.REMOVE_FROM_CART:
+      return {
+        ...state,
+        items: state.items.filter((item) => item.id !== action.payload),
+      };
 
-      case action_key.EMPTY_CART:
-            return [];
+    case action_key.UPDATE_CART_ITEM:
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.id === action.payload.productId
+            ? { ...item, quantity: action.payload.quantity }
+            : item
+        ),
+      };
+
+    case action_key.CLEAR_CART:
+      return initialState;
 
     case action_key.FETCH_PRODUCTS:
       return {
@@ -70,7 +83,7 @@ const productReducer = (state = initialState, action) => {
           ...state,
           filteredProduct: filteredProducts,
         };
-      };
+      }
       break;
 
     case action_key.SET_LOADING:
