@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { clearCart } from "../store/action";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { items } = useSelector((state) => state.product);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -15,8 +17,10 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = (e) => {
+    dispatch(clearCart());
     e.preventDefault();
     localStorage.removeItem("access_token");
+    localStorage.removeItem("cartItems");
     setIsLoggedIn(false);
     navigate("/");
   };

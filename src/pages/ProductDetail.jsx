@@ -11,6 +11,7 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
 
   const { loading, error, product } = useSelector((state) => state.product);
+  const { items } = useSelector((state) => state.product);
 
   useEffect(() => {
     if (id) {
@@ -20,11 +21,13 @@ const ProductDetail = () => {
 
   const handleAddToCart = (product) => {
     const token = localStorage.getItem("access_token");
-
+    const existingItem = items.find(item => item.id === product.id);
+  
     if (token) {
-
-      dispatch(addToCart(product));
-      console.log("Product added to cart:", product);
+      if (!existingItem) {
+        dispatch(addToCart(product));
+        console.log("Product added to cart:", product);
+      }
     } else {
       navigate("/login");
     }

@@ -1,19 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { removeFromCart, updateCartQuantity } from "../store/action";
+import { clearCart, removeFromCart, updateCartQuantity } from "../store/action";
 
 const Cart = () => {
   const { items, loading, error } = useSelector((state) => state.product);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const total = items.reduce((acc, item) => {
     return acc + (item.price * item.quantity);
   }, 0);
-
-  const handleCheckout = () => {
-    alert("Thank you for your purchase!");
-    navigate('/');
-  };
 
   if (loading) {
     return <Loader />;
@@ -22,6 +18,12 @@ const Cart = () => {
   if (error) {
     return <EmptyPage />;
   }
+
+  const handleCheckout = () => {
+    dispatch(clearCart());
+    alert("Thank you for your purchase!");
+    navigate('/');
+  };
 
   const Card = (props) => {
     const { item } = props;
@@ -39,7 +41,7 @@ const Cart = () => {
       } else if (type === 'decrement' && newQuantity > 1) {
         newQuantity -= 1;
       }
-  
+
       dispatch(updateCartQuantity(item.id, newQuantity));
     };
   
@@ -56,7 +58,7 @@ const Cart = () => {
           <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
             <a href="#" className="shrink-0 md:order-1">
               <img
-                className="h-25 w-25 dark:hidden"
+                className="h-20 w-20 dark:hidden"
                 src={item?.image}
                 alt="imac image"
               />
@@ -67,7 +69,7 @@ const Cart = () => {
               />
             </a>
             <div className="flex items-center justify-between md:order-3 md:justify-end">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
                 <button
                  onClick={() => handleQuantityChange('decrement')}
                   type="button"
@@ -92,16 +94,16 @@ const Cart = () => {
               </div>
               <div className="text-end md:order-4 md:w-32">
                 <p className="text-base font-bold text-gray-900">
-                {item?.price?.toLocaleString('id-ID', {
-                style: 'currency',
-                currency: 'USD',
-              })}
+                {(item.price * item.quantity).toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'USD',
+                  })}
                 </p>
               </div>
             </div>
 
             <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-              <Link
+            <Link
                 to="/"
                 className="text-lg font-medium text-black hover:underline"
               >
@@ -147,7 +149,7 @@ const Cart = () => {
         <h2 className="text-3xl font-bold text-red-500">My Cart</h2>
         <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
           <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-            {items?.map((item) => (
+            {items.map((item) => (
               <Card item={item} key={item.id} />
             ))}
           </div>
@@ -173,6 +175,7 @@ const Cart = () => {
               >
                 Proceed to Checkout
               </button>
+
 
               <div className="flex items-center justify-center gap-2">
                 <span className="text-sm font-normal text-black"> or </span>
