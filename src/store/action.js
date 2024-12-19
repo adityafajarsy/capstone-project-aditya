@@ -68,3 +68,8 @@ export const updateCartItem = (productId, quantity) => ({
 export const clearCart = () => ({
   type: action_key.CLEAR_CART,
 });
+
+export const updateCartQuantity = (productId, quantity) => ({
+  type: action_key.UPDATE_CART_QUANTITY,
+  payload: { productId, quantity }
+});

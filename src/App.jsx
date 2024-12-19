@@ -17,16 +17,14 @@ function App() {
             <Routes>
               <Route path="/" element={<ProductList />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/cart" element={<Cart />} />
-
-              {/* <Route
+              <Route
           path="/cart"
           element={
             <ProtectedRoute>
               <Cart />
             </ProtectedRoute>
           }
-        /> */}
+        />
               <Route path="/product/:id" element={<ProductDetail />} />
             </Routes>
           </main>

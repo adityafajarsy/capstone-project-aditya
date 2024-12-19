@@ -1,9 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { removeFromCart } from "../store/action";
+import { Link, useNavigate } from "react-router-dom";
+import { removeFromCart, updateCartQuantity } from "../store/action";
 
 const Cart = () => {
   const { items, loading, error } = useSelector((state) => state.product);
+  const navigate = useNavigate();
+
+  const total = items.reduce((acc, item) => {
+    return acc + (item.price * item.quantity);
+  }, 0);
+
+  const handleCheckout = () => {
+    alert("Thank you for your purchase!");
+    navigate('/');
+  };
 
   if (loading) {
     return <Loader />;
@@ -21,13 +31,32 @@ const Cart = () => {
       dispatch(removeFromCart(item.id));
     };
 
+    const handleQuantityChange = (type) => {
+      let newQuantity = item.quantity;
+      
+      if (type === 'increment') {
+        newQuantity += 1;
+      } else if (type === 'decrement' && newQuantity > 1) {
+        newQuantity -= 1;
+      }
+  
+      dispatch(updateCartQuantity(item.id, newQuantity));
+    };
+  
+    const handleInputChange = (e) => {
+      const value = parseInt(e.target.value) || 1;
+      if (value >= 1) {
+        dispatch(updateCartQuantity(item.id, value));
+      }
+    }
+
     return (
       <div className="space-y-6 mt-4">
         <div className="rounded-lg border border-red-200 bg-white p-4 shadow-sm dark:border-gray-400  md:p-6">
           <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
             <a href="#" className="shrink-0 md:order-1">
               <img
-                className="h-20 w-20 dark:hidden"
+                className="h-25 w-25 dark:hidden"
                 src={item?.image}
                 alt="imac image"
               />
@@ -40,18 +69,21 @@ const Cart = () => {
             <div className="flex items-center justify-between md:order-3 md:justify-end">
               <div className="flex items-center gap-2">
                 <button
+                 onClick={() => handleQuantityChange('decrement')}
                   type="button"
                   className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-100 dark:border-white dark:bg-red-500 text-white font-bold"
                 >
                   -
                 </button>
                 <input
-                  type="text"
-                  className="w-10 h-7 shrink-0 border bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0"
-                  placeholder="0"
-                  required
-                />
+                type="text"
+                min="1"
+                value={item.quantity}
+                onChange={handleInputChange}
+                className="w-10 h-7 shrink-0 border text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0"
+              />
                 <button
+                 onClick={() => handleQuantityChange('increment')}
                   type="button"
                   className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-100 dark:border-white dark:bg-red-500 text-white"
                 >
@@ -60,18 +92,21 @@ const Cart = () => {
               </div>
               <div className="text-end md:order-4 md:w-32">
                 <p className="text-base font-bold text-gray-900">
-                  {item?.price}
+                {item?.price?.toLocaleString('id-ID', {
+                style: 'currency',
+                currency: 'USD',
+              })}
                 </p>
               </div>
             </div>
 
             <div className="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-              <a
-                href="#"
-                className="text-base font-medium text-gray-900 hover:underline"
+              <Link
+                to="/"
+                className="text-lg font-medium text-black hover:underline"
               >
-                {item?.description}
-              </a>
+                {item?.title}
+              </Link>
 
               <div className="flex items-center gap-4">
                 <button
@@ -124,17 +159,20 @@ const Cart = () => {
                 <dl className="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
                   <dt className="text-base font-bold text-gray-900">Total</dt>
                   <dd className="text-base font-bold text-gray-900">
-                    $8,191.00
+                  {total.toLocaleString('id-ID', {
+                  style: 'currency',
+                  currency: 'USD',
+                })}
                   </dd>
                 </dl>
               </div>
 
-              <a
-                href="#"
+              <button
+                 onClick={handleCheckout}
                 className="flex w-full items-center justify-center rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-100 dark:bg-primary-600 dark:hover:bg-primary-700"
               >
                 Proceed to Checkout
-              </a>
+              </button>
 
               <div className="flex items-center justify-center gap-2">
                 <span className="text-sm font-normal text-black"> or </span>

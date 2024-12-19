@@ -14,9 +14,10 @@ export const Loader = () => (
 const ProductList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { products, filteredProduct, loading, error } = useSelector(
+  const { product, filteredProduct, loading, error } = useSelector(
     (state) => state.product
   );
+  const { items } = useSelector((state) => state.product);
 
   useEffect(() => {
     dispatch(fetchProduct());
@@ -24,8 +25,9 @@ const ProductList = () => {
 
   const handleAddToCart = (product) => {
     const token = localStorage.getItem("access_token");
+    const existingItem = items.find(item => item.id === product.id);
 
-    if (!token) { // ini gw matiin dlu
+    if (token) { 
       dispatch(addToCart(product));
       console.log("Product added to cart:", product);
     } else {
@@ -151,7 +153,7 @@ const ProductList = () => {
                   Detail
                 </Link>
                 <button
-                  className="bg-red-500 text-sm h-10 px-2 font-semibold rounded-md text-white"
+                  className="bg-red-500 text-sm h-10 px-2 font-semibold rounded-md text-white hover:bg-red-600"
                   onClick={() => handleAddToCart(product)}
                 >
                   Add to Cart

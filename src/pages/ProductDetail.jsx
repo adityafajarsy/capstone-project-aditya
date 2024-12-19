@@ -21,8 +21,7 @@ const ProductDetail = () => {
   const handleAddToCart = (product) => {
     const token = localStorage.getItem("access_token");
 
-    if (!token) {
-      // ini gw matiin dlu
+    if (token) {
 
       dispatch(addToCart(product));
       console.log("Product added to cart:", product);
