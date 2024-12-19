@@ -1,49 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { getProducts } from "../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { fetchProduct } from "../store/action";
+import { useDispatch, useSelector } from "react-redux";
+import action_key from "../constants/action-key";
 
 const ProductList = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { products, filteredProduct, loading, error } = useSelector((state) => state.product);
 
   useEffect(() => {
-    getProducts(
-      (data) => {
-        setProducts(data);
-        setFilteredProducts(data);
-        setLoading(false);
-      },
-      (err) => {
-        console.error("Error fetching products:", err);
-        setError(err);
-        setLoading(false);
-      }
-    );
-  }, []);
+    dispatch(fetchProduct());
+  }, [dispatch]);
 
   const handleAddToCart = (product) => {
     const token = localStorage.getItem("access_token");
-  
+
     if (token) {
       let cart = JSON.parse(localStorage.getItem("cart")) || [];
       cart.push(product);
       localStorage.setItem("cart", JSON.stringify(cart));
       console.log("Product added to cart:", product);
     } else {
-      window.location.href = "/login";
+      navigate("/login");
     }
   };
 
   const filterByCategory = (category) => {
-    if (category === "All") {
-      setFilteredProducts(products);
-    } else {
-      setFilteredProducts(
-        products.filter((product) => product.category === category)
-      );
-    }
+    dispatch({
+      type: action_key.FILTER_PRODUCT,
+      payload: category,
+    });
   };
 
   if (loading) {
@@ -56,8 +43,16 @@ const ProductList = () => {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen text-red-500">
-        Error loading products. Please try again later.
+      <div className="grid h-screen place-content-center bg-white px-4">
+        <div className="text-center">
+          <h1 className="text-9xl font-black text-gray-200">404</h1>
+
+          <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Uh-oh!
+          </p>
+
+          <p className="mt-4 text-gray-500">Error Fetching Data.</p>
+        </div>
       </div>
     );
   }
@@ -129,7 +124,7 @@ const ProductList = () => {
 
       <div className="container mx-auto px-1 -mt-4 mb-12">
         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-5">
-          {filteredProducts.map((product) => (
+          {filteredProduct.map((product) => (
             <div
               key={product.id}
               className="w-full max-w-xs bg-white border-gray-700 rounded-lg shadow-lg mx-2 my-2 flex flex-col justify-between"
@@ -164,7 +159,10 @@ const ProductList = () => {
                 >
                   Detail
                 </Link>
-                <button className="bg-red-500 text-sm h-10 px-2 font-semibold rounded-md text-white" onClick={() => handleAddToCart(product)}>
+                <button
+                  className="bg-red-500 text-sm h-10 px-2 font-semibold rounded-md text-white"
+                  onClick={() => handleAddToCart(product)}
+                >
                   Add to Cart
                 </button>
               </div>

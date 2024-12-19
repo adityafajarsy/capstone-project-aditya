@@ -20,7 +20,6 @@ const Login = () => {
     try {
       const apiURL = import.meta.env.VITE_API_URL;
       const response = await axios.post(`${apiURL}/auth/login`, user);
-
       localStorage.setItem("access_token", response.data.token);
       setLoading(false);
       navigate("/");
@@ -75,7 +74,7 @@ const Login = () => {
               className={`h-10 px-6 font-semibold rounded-md bg-red-500 text-white w-full flex items-center justify-center ${
                 loading ? "opacity-70 cursor-not-allowed" : ""
               }`}
-              disabled={loading} // Tombol dinonaktifkan saat loading
+              disabled={loading} 
             >
               {loading ? (
                 <>

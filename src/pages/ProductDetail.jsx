@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getDetailProduct } from "../services/api";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState({});
+  const navigate = useNavigate()
 
   useEffect(() => {
     getDetailProduct(id, (data) => {
@@ -23,7 +24,7 @@ const ProductDetail = () => {
       localStorage.setItem("cart", JSON.stringify(cart));
       console.log("Product added to cart:", product);
     } else {
-      window.location.href = "/login";
+      navigate('/login')
     }
   };
 

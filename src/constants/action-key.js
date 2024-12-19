@@ -1,6 +1,10 @@
 const action_key = {
-  ADD_TO_CART : "ADD_CART",
-  REMOVE_FROM_CART: "REMOVE_CART",
+  FETCH_PRODUCTS: "FETCH_PRODUCTS",
+  ADD_TO_CART : "ADD_TO_CART",
+  REMOVE_FROM_CART: "REMOVE_FROM_CART",
+  FILTER_PRODUCT: "FILTER_PRODUCT",
+  SET_LOADING: "SET_LOADING",
+  SET_ERROR: "SET_ERROR",
 }
 
-export default action_key
+export default action_key;

@@ -13,7 +13,6 @@ const Navbar = () => {
   const handleLogout = (e) => {
     e.preventDefault()
     localStorage.removeItem("access_token");
-    localStorage.removeItem("cart");
     setIsLoggedIn(false);
     navigate('/')
   };
@@ -44,7 +43,7 @@ const Navbar = () => {
               </Link>
           </div>
           <div className="flex items-center gap-4">
-            <div className="sm:flex sm:gap-4">
+            <ul className="sm:flex sm:gap-4">
               {isLoggedIn ? (
                 <>
               <button 
@@ -63,7 +62,7 @@ const Navbar = () => {
                 Login
               </Link>
             )}
-          </div>
+          </ul>
           
             
               <div className="hidden sm:flex">
