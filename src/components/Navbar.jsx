@@ -18,7 +18,6 @@ const Navbar = () => {
   };
 
   
-  
   return (
     <header className="bg-white mt-3">
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 shadow-lg rounded-2xl">

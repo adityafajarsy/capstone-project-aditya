@@ -1,30 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getDetailProduct } from "../services/api";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDetailProduct } from "../store/action";
 
 const ProductDetail = () => {
-  const { id } = useParams();
-  const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState({});
-  const navigate = useNavigate()
+  const { id } = useParams(); // Tambahkan ini
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { loading, error, product } = useSelector((state) => state.product);
 
   useEffect(() => {
-    getDetailProduct(id, (data) => {
-      setProduct(data);
-      setLoading(false);
-    });
-  }, [id]);
+    if (id) {
+      dispatch(fetchDetailProduct(id)); // Passing id ke action
+    }
+  }, [dispatch, id]);
 
   const handleAddToCart = (product) => {
     const token = localStorage.getItem("access_token");
 
     if (token) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.push(product);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      console.log("Product added to cart:", product);
+      try {
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.push(product);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        console.log("Product added to cart:", product);
+      } catch (err) {
+        console.error("Error adding to cart:", err);
+        localStorage.setItem("cart", JSON.stringify([]));
+      }
     } else {
-      navigate('/login')
+      navigate('/login');
     }
   };
 
@@ -34,6 +40,24 @@ const ProductDetail = () => {
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-red-500"></div>
       </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="grid h-screen place-content-center bg-white px-4">
+        <div className="text-center">
+          <h1 className="text-9xl font-black text-gray-200">404</h1>
+          <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Uh-oh!
+          </p>
+          <p className="mt-4 text-gray-500">Error Fetching Data.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product || !Object.keys(product).length) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -58,50 +82,6 @@ const ProductDetail = () => {
                   <span className="flex items-center">
                     <svg
                       fill="currentColor"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="w-4 h-4 text-red-500"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                    </svg>
-                    <svg
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="w-4 h-4 text-red-500"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                    </svg>
-                    <svg
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="w-4 h-4 text-red-500"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                    </svg>
-                    <svg
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="w-4 h-4 text-red-500"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                    </svg>
-                    <svg
-                      fill="none"
                       stroke="currentColor"
                       strokeLinecap="round"
                       strokeLinejoin="round"

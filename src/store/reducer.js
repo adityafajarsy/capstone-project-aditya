@@ -34,13 +34,27 @@ const productReducer = (state = initialState, action) => {
       }
       break;
 
+      case action_key.EMPTY_CART:
+            return [];
+
     case action_key.FETCH_PRODUCTS:
       return {
         ...state,
         products: action.payload,
         filteredProduct: action.payload,
         loading: action.loading,
+        error: action.loading,
       };
+      break;
+
+    case action_key.FETCH_DETAIL_PRODUCT:
+      return {
+        ...state,
+        product: action.payload,
+        loading: action.loading,
+        error: action.loading,
+      };
+      break;
 
     case action_key.FILTER_PRODUCT:
       if (action.payload === "All") {
@@ -56,23 +70,25 @@ const productReducer = (state = initialState, action) => {
           ...state,
           filteredProduct: filteredProducts,
         };
-      }
+      };
+      break;
 
     case action_key.SET_LOADING:
       return {
         ...state,
         loading: action.payload,
       };
+      break;
 
     case action_key.SET_ERROR:
       return {
         ...state,
         error: action.payload,
       };
+      break;
 
     default:
       return state;
-      break;
   }
 };
 
