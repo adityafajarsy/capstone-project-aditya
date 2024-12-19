@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { addToCart, fetchProduct } from "../store/action";
+import { fetchProduct } from "../store/action";
 import { useDispatch, useSelector } from "react-redux";
 import action_key from "../constants/action-key";
 
@@ -14,8 +14,14 @@ const ProductList = () => {
   }, [dispatch]);
 
   const handleAddToCart = (product) => {
-    const result = dispatch(addToCart(product));
-    if (result === "/login") {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(product);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      console.log("Product added to cart:", product);
+    } else {
       navigate("/login");
     }
   };

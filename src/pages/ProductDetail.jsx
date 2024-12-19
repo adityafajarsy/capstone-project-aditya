@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchDetailProduct } from "../store/action";
 
 const ProductDetail = () => {
-  const { id } = useParams(); // Tambahkan ini
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -12,7 +12,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchDetailProduct(id)); // Passing id ke action
+      dispatch(fetchDetailProduct(id)); 
     }
   }, [dispatch, id]);
 
