@@ -12,6 +12,7 @@ export const Loader = () => (
 );
 
 const ProductList = () => {
+  const [addedProducts, setAddedProducts] = useState(new Set());
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { products, filteredProduct, loading, error } = useSelector(

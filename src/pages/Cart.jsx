@@ -25,6 +25,20 @@ const Cart = () => {
     navigate('/');
   };
 
+  if (items.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[80vh]">
+        <h2 className="text-2xl font-bold mb-4">You haven't purchase any products yet</h2>
+        <Link
+          to="/"
+          className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600"
+        >
+          Kembali ke Home
+        </Link>
+      </div>
+    );
+  }
+
   const Card = (props) => {
     const { item } = props;
     const dispatch = useDispatch();
