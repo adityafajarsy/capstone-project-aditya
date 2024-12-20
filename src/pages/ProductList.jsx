@@ -68,9 +68,7 @@ const ProductList = () => {
             </h2>
 
             <p className="hidden max-w-lg text-white/90 md:mt-6 md:block md:text-lg md:leading-relaxed">
-              Kami menyediakan keperluan anda mulai dari pakaian, tas, alat
-              elektronik dengan harga yang murah namun berkualitas Lorem, ipsum
-              dolor sit amet consectetur adipisicing elit. Doloremque, laborum?.
+            Kami menyediakan berbagai kebutuhan Anda, mulai dari pakaian, tas, hingga elektronik berkualitas tinggi dengan harga yang terjangkau. Temukan solusi belanja terbaik di sini!
             </p>
 
             <div className="mt-4 sm:mt-8">
