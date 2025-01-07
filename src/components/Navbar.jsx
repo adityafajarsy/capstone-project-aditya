@@ -1,27 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearCart } from "../store/action";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { items } = useSelector((state) => state.product);
   const cartItemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    setIsLoggedIn(!!token);
-  }, []);
+  const handleLogin = () => {
+    localStorage.getItem("access_token");
+  };
 
-  const handleLogout = (e) => {
+  const handleLogout = () => {
     dispatch(clearCart());
-    e.preventDefault();
     localStorage.removeItem("access_token");
     localStorage.removeItem("cartItems");
-    setIsLoggedIn(false);
     navigate("/");
   };
 
@@ -50,19 +46,20 @@ const Navbar = () => {
           </div>
           <div className="flex items-center gap-4">
             <ul className="sm:flex sm:gap-4">
-              {isLoggedIn ? (
+              {localStorage.access_token ? (
                 <>
-                  <button
-                    type="button"
+                  <Link
+                    to="/"
                     onClick={handleLogout}
                     className="rounded-md bg-red-500 px-5 py-2.5 text-sm font-medium text-white shadow"
                   >
                     Logout
-                  </button>
+                  </Link>
                 </>
               ) : (
                 <Link
                   to="/login"
+                  onClick={handleLogin}
                   className="rounded-md bg-red-500 px-5 py-2.5 text-sm font-medium text-white shadow"
                 >
                   Login

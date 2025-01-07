@@ -15,7 +15,7 @@ const ProductList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [addedProducts, setAddedProducts] = useState(new Set());
-  const { products, filteredProduct, loading, error } = useSelector(
+  const {filteredProduct, loading, error } = useSelector(
     (state) => state.product
   );
   const { items } = useSelector((state) => state.product);
